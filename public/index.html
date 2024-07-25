@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Transaction Data</h1>
+    <div id="error-message" class="error"></div>
+    <table id="transactions-table">
+        <thead>
+            <tr>
+                <th>UUID</th>
+                <th>Network</th>
+                <th>Fee</th>
+                <th>Compute Units Consumed</th>
+                <th>Timestamp</th>
+                <th>Type</th>
+                <th>Wallet Address</th>
+                <th>Transaction Hash</th>
+                <th>Amount</th>
+                <th>Token Name</th>
+                <th>Token Symbol</th>
+                <th>Explorer URL</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script>
+        async function fetchTransactions() {
+            try {
+                const response = await fetch('/transactions');
+                const data = await response.json();
+
+                if (data.status === 'error') {
+                    document.getElementById('error-message').innerText = data.message;
+                    return;
+                }
+
+                const tableBody = document.querySelector('#transactions-table tbody');
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                data.data.forEach(tx => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${tx.uuid}</td>
+                        <td>${tx.network}</td>
+                        <td>${tx.fee}</td>
+                        <td>${tx.compute_units_consumed}</td>
+                        <td>${tx.timestamp}</td>
+                        <td>${tx.type}</td>
+                        <td>${tx.wallet_address}</td>
+                        <td>${tx.transaction_hash}</td>
+                        <td>${tx.metadata.amount}</td>
+                        <td>${tx.token.name}</td>
+                        <td>${tx.token.symbol}</td>
+                        <td><a href="${tx.explorer_url}" target="_blank">View Transaction</a></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                document.getElementById('error-message').innerText = 'Failed to fetch transaction data.';
+                console.error('Error fetching transactions:', error);
+            }
+        }
+
+        // Fetch transactions on page load
+        fetchTransactions();
+    </script>
+</body>
+</html>
