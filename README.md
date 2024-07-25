@@ -17,8 +17,8 @@ project/
 ## 1. Clone the repository
 
    ```bash
-   git clone https://github.com/chetanck03/project.git
-   cd project
+   git clone https://github.com/chetanck03/projectApi.git
+   cd projectApi
    ```
 
 ## 2. Install dependencies :
